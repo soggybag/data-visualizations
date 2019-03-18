@@ -6,3 +6,4 @@ Some data visualizations
 - [Heart Disease](https://soggybag.github.io/data-visualizations/heart-disease/index.html)
 - [Mall Spending](https://soggybag.github.io/data-visualizations/mall-spending/index.html)
 - [Titanic](https://soggybag.github.io/data-visualizations/titanic/index.html)
+- [Population](https://soggybag.github.io/data-visualizations/population/index.html)
