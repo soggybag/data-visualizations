@@ -1,0 +1,341 @@
+<div>
+	<canvas id="canvas" width="800" height="400"></canvas>
+	<div>
+		<button class="canvas-button" data-tag="Birth">Birth</button>
+		<button class="canvas-button" data-tag="Death">Death</button>
+		<button class="canvas-button" data-tag="Both">Both</button>
+		<button class="canvas-button" data-tag="A">A</button>
+		<button class="canvas-button" data-tag="B">B</button>
+		<button class="canvas-button" data-tag="C">C</button>
+		<button class="canvas-button" data-tag="D">D</button>
+	</div>
+</div>
+
+<script>
+	// -------------------------------------------------
+	// set up container styles 
+	
+	// Center everything in the body
+	const body = document.querySelector('body')
+	const html = document.querySelector('html')
+	body.style.height = '100%'
+	html.style.height = '100%'
+	
+	body.style.display = 'flex'
+	body.style.justifyContent = 'center'
+	body.style.alignItems = 'center'
+	
+	// -------------------------------------------------
+	// Get the canvas 
+	const canvas = document.getElementById('canvas')
+	const ctx = canvas.getContext('2d')
+	canvas.style.border = '1px solid'
+	canvas.style.borderRadius = '5px'
+	
+	
+	// -------------------------------------------------
+	// Set up buttons
+	
+	const displayOptions = {
+		show: 'both',
+		display: 'A'
+	}
+	
+	// Get buttons
+	const buttons = document.querySelectorAll('.canvas-button')
+	// Setup buttons 
+	for (let button of buttons) {
+		// Button styles 
+		button.style.border = '1px solid'
+		button.style.borderRadius = '5px'
+		button.style.margin = '5px 5px 5px 0'
+		
+		button.addEventListener('click', function(e) {
+			const { tag } = this.dataset
+			console.log(tag)
+			
+			switch(tag) {
+				case 'birth': 
+					displayOptions.birth = !displayOptions.birth
+					break
+				case 'death': 
+					displayOptions.death = !displayOptions.death
+					break 
+				case 'flip': 
+					displayOptions.flip = !displayOptions.flip
+					break
+				case 'A':
+					displayOptions.display = tag
+					break
+				case 'B':
+					displayOptions.display = tag
+					break
+				case 'C':
+					displayOptions.display = tag
+					break
+				case 'D':
+					displayOptions.display = tag
+					break
+			}
+			
+			console.log(displayOptions)
+			draw()
+			
+		})
+	}
+	
+	// Fetch the data
+	fetch('birth-death-rates.json')
+	.then(res => res.json())
+	.then(json => handleData(json))
+	.catch(err => console.log(err.message))
+	
+	let allData = null
+	
+	function handleData(json) {
+		allData = json
+		draw()
+	}
+	
+	function draw() {
+		switch(displayOptions.display) {
+				case 'A': 
+					drawBarsAboveAndBelow()
+					break
+				case 'B':
+					drawFromCenter()
+					break
+				case 'C':	
+					drawSideBySide()
+					break
+				case 'D':	
+					drawCirclesPlot()
+					break
+			}
+	}
+	
+	// ----------------------------------------------------
+	// Drawing circles plot
+	
+	function drawCirclesPlot() {
+		const { population } = allData 
+		
+		const count = population.length
+		const step = canvas.width / count
+		
+		const minBirthRate = getMinFor('BirthRate', population)
+		const maxBirthRate = getMaxFor('BirthRate', population)
+		const minDeathRate = getMinFor('DeathRate', population)
+		const maxDeathRate = getMaxFor('DeathRate', population)
+		
+		// colors 
+		const startHue = 0
+		const endHue = 80
+		const hueStep = (endHue - startHue) / count
+		
+		// Draw stuff
+		
+		// Clear canvas 
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		
+		const { width, height } = canvas
+		const midY = height / 2
+		
+		for (let i = 0; i < population.length; i += 2) {
+			const { Name, BirthRate, DeathRate } = population[i]
+			const x = DeathRate / maxDeathRate * width
+			const size = 10 + 5 * BirthRate / DeathRate
+			const y = height - BirthRate / maxBirthRate * height
+			const colorOffset = BirthRate > DeathRate ? 0 : 180
+			
+			drawCircle(x, y, size, `hsla(${hueStep * i + colorOffset}, 100%, 50%, 0.16)`)
+			ctx.fillStyle = '#000'
+			ctx.fillText(Name, x+5, y-5)
+		}
+	}
+	
+	// ----------------------------------------------------
+	// Drawing bars that are centered in the view
+	
+	function drawFromCenter() {
+		const { population } = allData 
+		
+		console.log(population)
+		
+		const count = population.length
+		const step = canvas.width / count
+		
+		const minBirthRate = getMinFor('BirthRate', population)
+		const maxBirthRate = getMaxFor('BirthRate', population)
+		const minDeathRate = getMinFor('DeathRate', population)
+		const maxDeathRate = getMaxFor('DeathRate', population)
+		const rangeBirthRate = maxBirthRate - minBirthRate
+		
+		// colors 
+		const startHue = 120
+		const endHue = 140
+		const hueStep = (endHue - startHue) / count
+		
+		// Draw stuff
+		
+		// Clear canvas 
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		
+		const { width, height } = canvas
+		const midY = height / 2
+		
+		for (let i = 0; i < population.length; i += 2) {
+			const { Name, BirthRate, DeathRate } = population[i]
+			const x = step * i
+			const w = step
+			const hBirth = BirthRate / maxBirthRate * height
+			const yBirth = (height - hBirth) / 2
+			
+			if (displayOptions.show === 'birth' || displayOptions.show === 'both') {
+				// Draw BirthRate
+				drawBar(x, yBirth, w, hBirth, `hsla(${hueStep * i}, 100%, 50%, 1)`)
+			}
+			
+			const hDeath = DeathRate / maxDeathRate * height
+			const yDeath = (height - hDeath) / 2
+			
+			if (displayOptions.show === 'death' || displayOptions.show === 'both') {
+				// Draw BirthRate
+				drawBar(x+step, yDeath, w, hDeath, `hsla(${hueStep * i + 180}, 100%, 50%, 1)`)
+			}
+		}
+	}
+	
+	// -------------------------------------------------------
+	// Draw bars that are paired side by side 
+	
+	function drawSideBySide() {
+		const { population } = allData 
+		
+		const count = population.length
+		const step = canvas.width / count
+		
+		const minBirthRate = getMinFor('BirthRate', population)
+		const maxBirthRate = getMaxFor('BirthRate', population)
+		const minDeathRate = getMinFor('DeathRate', population)
+		const maxDeathRate = getMaxFor('DeathRate', population)
+		const rangeBirthRate = maxBirthRate - minBirthRate
+		
+		// colors 
+		const startHue = 0
+		const endHue = 180
+		const hueStep = (endHue - startHue) / count
+		
+		// Draw stuff
+		
+		// Clear canvas 
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		
+		const { width, height } = canvas
+		const midY = height / 2
+		
+		for (let i = 0; i < population.length; i += 2) {
+			const { Name, BirthRate, DeathRate } = population[i]
+			const x = step * i
+			const w = step
+			const hBirth = BirthRate / maxBirthRate * height
+			const yBirth = height - hBirth
+			
+			// Draw BirthRate
+			drawBar(x, yBirth, w, hBirth, `hsla(${hueStep * i}, 100%, 50%, 1)`)
+			
+			const hDeath = DeathRate / maxDeathRate * height
+			const yDeath = height - hDeath
+			
+			// Draw BirthRate
+			drawBar(x+step, yDeath, w, hDeath, `hsla(${hueStep * i + 180}, 100%, 50%, 1)`)
+		}
+	}
+	
+	
+	// --------------------------------------------------
+	// Draw bars in two sets one above center and one set below 
+	
+	function drawBarsAboveAndBelow() {
+		const { population } = allData 
+		
+		const count = population.length
+		const step = canvas.width / count
+		
+		const minBirthRate = getMinFor('BirthRate', population)
+		const maxBirthRate = getMaxFor('BirthRate', population)
+		const minDeathRate = getMinFor('DeathRate', population)
+		const maxDeathRate = getMaxFor('DeathRate', population)
+		const rangeBirthRate = maxBirthRate - minBirthRate
+		
+		// colors 
+		const startHue = 120
+		const endHue = 180
+		const hueStep = (endHue - startHue) / count
+		
+		// Draw stuff
+		
+		// Clear canvas 
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		
+		const { width, height } = canvas
+		const midY = height / 2
+		
+		for (let i = 0; i < population.length; i += 1) {
+			const { Name, BirthRate, DeathRate } = population[i]
+			const x = step * i
+			const w = step 
+			const hBirth = BirthRate / maxBirthRate * midY
+			const yBirth = midY - hBirth
+			
+			// Draw BirthRate
+			drawBar(x, yBirth, w, hBirth, `hsla(${hueStep * i}, 50%, 50%, 0.5)`)
+			
+			const hDeath = DeathRate / maxDeathRate * midY
+			const yDeath = midY
+			
+			// Draw BirthRate
+			drawBar(x, yDeath, w, hDeath, `hsla(${hueStep * i + 180}, 50%, 50%, 0.5)`)
+		}
+	}
+	
+	
+	// --------------------------
+	// Helper functions 
+	
+	function drawBar(x, y, w, h, style) {
+		ctx.beginPath()
+		ctx.fillStyle = style
+		ctx.fillRect(x, y, w, h)
+		ctx.closePath()
+	}
+	
+	function drawCircle(x, y, r, style) {
+		ctx.fillStyle = style
+		ctx.beginPath()
+		ctx.arc(x, y, r, 0, Math.PI * 2, true)
+		ctx.fill()
+		ctx.closePath()
+	}
+	
+	// Helper functions 
+	
+	// Get the min value for field 
+	function getMinFor(field, data) {
+		return data.reduce((acc, item) => {
+			return Math.min(acc, item[field])
+		}, Number.MAX_SAFE_INTEGER)
+	}	 
+	
+	// Get the max value for field  
+	function getMaxFor(field, data) {
+		return data.reduce((acc, item) => {
+			return Math.max(acc, item[field])
+		}, 0)
+	}	
+	
+	// Sort data on field
+	function sortOn(field, data) {
+		data.sort((a, b) => a['field'] - b['field'])
+	}
+</script>

@@ -1,0 +1,234 @@
+<div>
+	<canvas id="canvas" width="800" height="400"></canvas>
+	<div style="display: flex; justify-content: space-between">
+		<div>
+			<button class="canvas-button" data-sex="men">Men</button>
+			<button class="canvas-button" data-sex="women">Women</button>
+			<button class="canvas-button" data-sex="both">Both</button>
+		</div>
+		<div>
+			<button class="sort-button" data-field="age">Age</button>
+			<button class="sort-button" data-field="chol">Cholesteral</button>
+			<button class="sort-button" data-field="trestbps">Blood Pressure</button>
+		</div>
+	</div>
+</div>
+
+<script>
+	// Center everything in the body
+	const body = document.querySelector('body')
+	const html = document.querySelector('html')
+	body.style.height = '100%'
+	html.style.height = '100%'
+	
+	body.style.display = 'flex'
+	body.style.justifyContent = 'center'
+	body.style.alignItems = 'center'
+	
+	// Get the canvas 
+	const canvas = document.getElementById('canvas')
+	const ctx = canvas.getContext('2d')
+	canvas.style.border = '1px solid'
+	canvas.style.borderRadius = '5px'
+	
+	const showGender = {
+		men: true,
+		women: true
+	}
+	
+	let sortField = 'none'
+	
+	const buttons = document.querySelectorAll('.canvas-button')
+	const sortButtons = document.querySelectorAll('.sort-button')
+	
+	for (let button of buttons) {
+		button.style.border = '1px solid'
+		button.style.borderRadius = '5px'
+		button.style.margin = '5px 5px 5px 0'
+		select(button, true)
+		
+		button.addEventListener('click', function(e) {
+			resetButtons(buttons)
+			switch(this.dataset.sex) {
+				case 'both':
+					showGender.men = true
+					showGender.women = true
+					select(buttons[2], false)	
+					break
+				case 'men':
+					showGender.men = true
+					showGender.women = false
+					select(buttons[0], false)	
+					break
+				case 'women':
+					showGender.men = false
+					showGender.women = true
+					select(buttons[1], false)	
+					break
+			}
+			draw()
+		})
+		
+		select(buttons[2], false)	
+	}
+	
+	for (let button of sortButtons) {
+		button.style.border = '1px solid'
+		button.style.borderRadius = '5px'
+		button.style.margin = '5px 5px 5px 0'
+		select(button, true)
+		
+		button.addEventListener('click', function(e) {
+			resetButtons(sortButtons)
+			sortField = this.dataset.field
+			select(this)
+			draw()
+		})
+	} 
+	
+	// select(sortButtons[0], false)
+	
+	
+	
+	function select(button, state) {
+		button.style.color = state ? '#000' : '#fff'
+		button.style.backgroundColor = state ? '#fff' : '#000'
+	}
+	
+	function resetButtons(buttons) {
+		for (let button of buttons) {
+			select(button, true)	
+		}
+	}
+	
+	// Fetch the data
+	fetch('heart-disease.json')
+	.then(res => res.json())
+	.then(json => handleData(json))
+	.catch(err => console.log(err.message))
+	
+	let allData = null
+	function handleData(json) {
+		allData = json
+		draw()
+	}
+	
+	function draw() {
+		// Sort on age
+		sortOn(sortField, allData)
+		
+		const data = allData.filter((item) => {
+			if (showGender.men && showGender.women) {
+				return item
+			} else if ((item.sex === 1 && showGender.men) || (item.sex === 0 && showGender.women)) {
+				return item
+			}
+		})
+		
+		const count = data.length
+		const step = canvas.width / count
+		const minAge = getMinFor('age', data)
+		const maxAge = getMaxFor('age', data)
+		const maxTrestbps = getMaxFor('trestbps', data)
+		const maxChol = getMaxFor('chol', data)
+		
+		// colors 
+		const startHue = 120
+		const endHue = 180
+		const hueStep = (endHue - startHue) / count
+		
+		// Draw stuff
+		
+		// Clear canvas 
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		
+		// Fill with a background color
+		// ctx.fillStyle = 'rgba(255,0,0,1.0)'
+		// ctx.fillRect(0,0,canvas.width, canvas.height)
+		
+		// These are the properties we have to work with
+		// cp        = chest pain type 
+		// tresthpbs = resting blood pressure
+		// chol      = cholesteral 
+		// fbs       = fasting blood sugar
+		// thalach 	 = max heart rate 
+		// oldpeak   = ST depression induced by exercise 
+		
+		for (let i = 0; i < data.length; i += 1) {
+			const { age, ca, chol, cp, oldpeak, sex, thalach, trestbps } = data[i]
+			const x = step * i
+			const w = step 
+			const hTrestbps = trestbps / maxTrestbps * canvas.height 
+			const yTrestbps = canvas.height - hTrestbps
+			// Draw trestbps
+			drawBar(x, yTrestbps, w, hTrestbps, `hsla(${hueStep * i}, 50%, 50%, 0.5)`)
+		}
+		
+		for (let i = 0; i < data.length; i += 1) {
+			const { age, ca, chol, cp, oldpeak, sex, thalach, trestbps } = data[i]
+			const x = step * i
+			const w = step 
+			// chol
+			const hChol = chol / maxChol * canvas.height
+			const yChol = canvas.height - hChol
+			drawBar(x, yChol, w, hChol, `hsla(${hueStep * i + 180}, 50%, 50%, 0.5)`)
+		}
+		
+		for (let i = 0; i < data.length; i += 1) {
+			const { age, ca, chol, cp, oldpeak, sex, thalach, trestbps } = data[i]
+			const x = step * i
+			const w = step 
+			const hTrestbps = trestbps / maxTrestbps * canvas.height 
+			const yTrestbps = canvas.height - hTrestbps
+			// Add a circle 
+			drawCircle(x + step/2, yTrestbps, step, 'rgba(255, 0, 255, 0.63)')
+		}
+		
+		for (let i = 0; i < data.length; i += 1) {
+			const { age, ca, chol, cp, oldpeak, sex, thalach, trestbps } = data[i]
+			const x = step * i
+			const w = step 
+			// chol
+			const hChol = chol / maxChol * canvas.height
+			const yChol = canvas.height - hChol
+			// Add a circle 
+			drawCircle(x + step/2, yChol, step, 'rgba(0, 255, 255, 0.63)')
+		}
+	}
+	
+	function drawBar(x, y, w, h, style) {
+		ctx.beginPath()
+		ctx.fillStyle = style
+		ctx.fillRect(x, y, w, h)
+		ctx.closePath()
+	}
+	
+	function drawCircle(x, y, r, style) {
+		ctx.fillStyle = style
+		ctx.beginPath()
+		ctx.arc(x, y, r, 0, Math.PI * 2, true)
+		ctx.fill()
+		ctx.closePath()
+	}
+	
+	// Helper functions 
+	
+	// Get the min value for field 
+	function getMinFor(field, data) {
+		return data.reduce((acc, item) => {
+			return Math.min(acc, item[field])
+		}, Number.MAX_SAFE_INTEGER)
+	}	 
+	
+	// Get the max value for field  
+	function getMaxFor(field, data) {
+		return data.reduce((acc, item) => {
+			return Math.max(acc, item[field])
+		}, 0)
+	}	
+	
+	// Sort data on field
+	function sortOn(field, data) {
+		data.sort((a, b) => a[field] - b[field])
+	}
+</script>
