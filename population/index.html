@@ -1,0 +1,33 @@
+<div id="container"></div>
+
+<script>
+	const container = document.querySelector('#container')
+	
+	fetch('pop.json', { mode: 'no-cors' })
+		.then(res => res.json())
+		.then(json => handleData(json))
+		.catch(err => console.log(err.message))
+	
+	function handleData(data) {
+		// Get the max value
+		const max = data[1].reduce((acc, item) => Math.max(acc, item.value), 0)
+		
+		for (let item of data[1]) {
+			const { year, value } = item
+			const el = document.createElement('div')
+			// el.style.width = `${value * 0.000001}px` // Use whatever to make it work
+			el.style.width = `${100 * value / max}%` // Normalize and use %
+			el.style.height = '4px'
+			el.style.margin = '1px'
+			el.style.backgroundColor = '#000'
+			container.prepend(el)
+		} 
+	}
+	
+	// Challenges 
+	// - Add the date to the left of each bar
+	// - Make the bars draw vertically
+	// - Add the date below each bar
+	// - Change the color of each bar
+	
+</script>
