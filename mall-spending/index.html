@@ -99,7 +99,14 @@
 		button.addEventListener('click', function(e) {
 			showBy(this.dataset.gender)
 			selectedButton = this
+			showSelected()
 		})
+
+		if (button.dataset.gender === 'all') {
+			selectedButton = button
+		} 
+
+		showSelected()
 	}
 
 	function showSelected() {
