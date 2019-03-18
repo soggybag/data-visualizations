@@ -2,6 +2,9 @@
 
 <script>
 	const container = document.querySelector('#container')
+	container.style.display = 'flex'
+	container.style.flexDirection = 'row'
+	container.style.alignItems = 'flex-end'
 	
 	fetch('pop.json', { mode: 'no-cors' })
 		.then(res => res.json())
@@ -12,14 +15,19 @@
 		// Get the max value
 		const max = data[1].reduce((acc, item) => Math.max(acc, item.value), 0)
 		
+		let i = 0
+		const hueStep = 360 / data[1].length
+		
 		for (let item of data[1]) {
 			const { year, value } = item
 			const el = document.createElement('div')
 			// el.style.width = `${value * 0.000001}px` // Use whatever to make it work
-			el.style.width = `${100 * value / max}%` // Normalize and use %
-			el.style.height = '4px'
-			el.style.margin = '1px'
-			el.style.backgroundColor = '#000'
+			el.style.height = `${100 * value / max}%` // Normalize and use %
+			 el.style.width = '4px'
+			 el.style.flex = 1
+			el.style.margin = '4px'
+			el.style.backgroundColor = `hsl(${i * hueStep}, 50%, 50%)`
+			i += 1
 			container.prepend(el)
 		} 
 	}
