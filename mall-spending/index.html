@@ -88,6 +88,12 @@
 	
 	const buttons = document.querySelectorAll('.gender-button')
 	for (let button of buttons) {
+		button.style.border = '1px solid'
+		button.style.padding = '0.25em 0.5em'
+		button.style.borderRadius = '5px'
+		button.style.backgroundColor = '#fff'
+		button.style.margin = '5px 5px 0 0'
+		
 		button.addEventListener('click', function(e) {
 			showBy(this.dataset.gender)
 		})
