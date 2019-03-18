@@ -87,16 +87,31 @@
 	}
 	
 	const buttons = document.querySelectorAll('.gender-button')
+	let selectedButton = null
+
 	for (let button of buttons) {
 		button.style.border = '1px solid'
 		button.style.padding = '0.25em 0.5em'
 		button.style.borderRadius = '5px'
 		button.style.backgroundColor = '#fff'
 		button.style.margin = '5px 5px 0 0'
-		
+
 		button.addEventListener('click', function(e) {
 			showBy(this.dataset.gender)
+			selectedButton = this
 		})
+	}
+
+	function showSelected() {
+		for (let button of buttons) {
+			if (selectedButton === button) {
+				button.style.color = '#fff'
+				button.style.backgroundColor = '#000'
+			} else {
+				button.style.color = '#000'
+				button.style.backgroundColor = '#fff'
+			}
+		}
 	}
 	
 	function showBy(gender) {
