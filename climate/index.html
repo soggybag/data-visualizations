@@ -1,0 +1,149 @@
+<h1>Climate Data</h1>
+
+<canvas width="600" height="600"></canvas>
+<div>
+	<button>1</button>
+	<button>2</button>
+	<button>3</button>
+	<button>4</button>
+	<button>5</button>
+</div>
+
+<script>
+	fetch('climate.json')
+	.then(res => res.json())
+	.then(json => handleData(json))
+	.catch(err => console.log(err.message))
+	
+	function handleData5(data) {
+		console.log(data)
+		setupCanvas()
+		const canvas = document.querySelector('canvas')
+		const ctx = canvas.getContext('2d')
+		const count = data.length
+		const centerX = 300
+		const centerY = 300
+		data.forEach((city, cityIndex) => {
+			const { monthlyAvg } = city
+			const radius = 30
+			const step = radius / monthlyAvg.length
+				
+			if (cityIndex > 0) { return }
+			
+			monthlyAvg.forEach((obj, i) => {
+				const { high, low, dryDays, snowDays, rainfall } = obj
+				const space = 600 / 12
+				const x = space * (i % 10) + space / 2
+				const y = space * Math.floor(i / 10) + space / 2
+				
+				const things = [high, low, dryDays, snowDays, rainfall]
+				things.forEach((thing, i) => {
+					console.log(x, y, 10 * (i+1))
+					ctx.beginPath()
+					ctx.strokeStyle = `hsla(${360 / 5 * i + 0}, 50%, 50%, 1)`
+					ctx.lineWidth = 1
+					ctx.arc(x, y, 5 * (i+1), Math.PI, thing / 180 * Math.PI * 2 + Math.PI)
+					ctx.stroke()
+				}) 
+			})
+		})
+	}
+
+	
+	function handleData4(data) {
+		console.log(data)
+		setupCanvas('#000')
+		const canvas = document.querySelector('canvas')
+		const ctx = canvas.getContext('2d')
+		const count = data.length
+		const centerX = 300
+		const centerY = 300
+		data.forEach((city, cityIndex) => {
+			const { monthlyAvg } = city
+			const radius = 30
+			const step = radius / monthlyAvg.length
+			const x = 60 * (cityIndex % 10) + 30
+			const y = 60 * Math.floor(cityIndex / 10) + 30
+				
+			monthlyAvg.forEach((obj, i) => {
+				const { high, low } = obj
+				
+				ctx.beginPath()
+				ctx.strokeStyle = `hsla(${360 / 12 * i + 0}, 50%, 50%, 1)`
+				ctx.lineWidth = 1
+				ctx.arc(x, y, step * i, Math.PI, high / 360 * Math.PI * 2 + Math.PI)
+				ctx.stroke()
+			})
+		})
+	}
+	
+	function handleData3(data) {
+		console.log(data)
+		setupCanvas()
+		const canvas = document.querySelector('canvas')
+		const ctx = canvas.getContext('2d')
+		const count = data.length
+		const centerX = 300
+		const centerY = 300
+		const step = 300 / count
+		data.forEach((city, i) => {
+			const { monthlyAvg } = city
+			monthlyAvg.forEach((obj) => {
+				const { high } = obj
+				ctx.beginPath()
+				ctx.strokeStyle = `hsla(${360 / count * i}, 50%, 50%, 0.125)`
+				ctx.lineWidth = 1
+				ctx.arc(centerX, centerY, step * i, Math.PI, high / 360 * Math.PI * 2 + Math.PI)
+				ctx.stroke()
+			})
+		})
+	}
+	
+	function handleData2(data) {
+		console.log(data)
+		setupCanvas()
+		const canvas = document.querySelector('canvas')
+		const ctx = canvas.getContext('2d')
+		const count = data.length
+		const centerX = 300
+		const centerY = 300
+		const step = 300 / count
+		data.forEach((city, i) => {
+			const { monthlyAvg } = city
+			const { high } = monthlyAvg[0]
+			
+			ctx.beginPath()
+			ctx.strokeStyle = `hsla(${360 / count * i}, 50%, 50%, 1)`
+			ctx.lineWidth = 1
+			ctx.arc(centerX, centerY, step * i, 0, high / 360 * Math.PI * 2)
+			ctx.stroke()
+		})
+	}
+	
+	function handleData(data) {
+		setupCanvas()
+		const canvas = document.querySelector('canvas')
+		const ctx = canvas.getContext('2d')
+		const cityCount = data.length
+		data.forEach((city, cityIndex) => {
+			const count = city.monthlyAvg.length
+			const step = 600 / (count - 1) 
+			ctx.beginPath()
+			ctx.moveTo(0, 600 - city.monthlyAvg[0].rainfall * 1 + 0.5)
+			ctx.strokeStyle = `hsla(${360 / cityCount * cityIndex}, 50%, 50%, 0.5)`
+			city.monthlyAvg.forEach((record, i) => {
+				const { rainfall } = record
+				ctx.lineWidth = 1
+				ctx.lineTo(i * step + 0.5, 600 - rainfall * 1 + 0.5)
+				ctx.stroke()
+			})
+		})
+	}
+	
+	function setupCanvas(color = '#eee') {
+		const canvas = document.querySelector('canvas')
+		const ctx = canvas.getContext('2d')
+		ctx.fillStyle = color
+		ctx.fillRect(0, 0, 600, 600)
+	}
+</script>

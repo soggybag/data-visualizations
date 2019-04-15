@@ -7,3 +7,4 @@ Some data visualizations
 - [Mall Spending](https://soggybag.github.io/data-visualizations/mall-spending/index.html)
 - [Titanic](https://soggybag.github.io/data-visualizations/titanic/index.html)
 - [Population](https://soggybag.github.io/data-visualizations/population/index.html)
+- [Climate](https://soggybag.github.io/data-visualizations/climate/index.html)
