@@ -2,11 +2,11 @@
 
 <canvas width="600" height="600"></canvas>
 <div>
-	<button>1</button>
-	<button>2</button>
-	<button>3</button>
-	<button>4</button>
-	<button>5</button>
+	<button class="select-button">1</button>
+	<button class="select-button">2</button>
+	<button class="select-button">3</button>
+	<button class="select-button">4</button>
+<!--	<button class="select-button">5</button>-->
 </div>
 
 <script>
@@ -15,16 +15,78 @@
 	body.style.display = 'flex'
 	body.style.justifyContent = 'center'
 	body.style.alignItems = 'center'
+	body.style.flexDirection = 'column'
+	body.style.height = '100%'
+	document.querySelector('html').style.height = '100%'
+	
+	function selectButton(button, state) {
+		button.style.border = '1px solid'
+		button.style.borderRadius = '5px'
+		button.style.margin = '5px'
+		button.style.padding = '5px 10px'
+		
+		if (state) {
+			button.style.backgroundColor = '#000'
+			button.style.color = '#fff'
+		} else {
+			button.style.backgroundColor = '#fff'
+			button.style.color = '#000'
+		}
+	}
+	
+	function makeGroup(buttons, callback) {
+		buttons.forEach((button) => {
+			selectButton(button, false)
+			button.addEventListener('click', (e) => {
+				buttons.forEach((b) => {
+					if (b === button) {
+						selectButton(b, true)
+					} else {
+						selectButton(b, false)
+					}
+				})
+				callback(button)
+			})
+		})
+	}
+	
+	makeGroup(document.querySelectorAll('.select-button'), (b) => {
+		const name = b.innerHTML
+		console.log(name)
+		
+		switch(name) {
+			case "1": 
+				handleData()
+				break
+			case "2": 
+				handleData2()
+				break
+			case "3":
+				handleData3()
+				break
+			case "4": 
+				handleData4()
+				break
+			case "5": 
+				handleData5()
+				break
+		}
+	})
+	
+	selectButton(document.querySelectorAll('.select-button')[0], true)
+	
+	let data = []
 	
 	fetch('climate.json')
 	.then(res => res.json())
-	.then(json => handleData(json))
+	.then(json => {
+		data = json
+		handleData(data)
+	})
 	.catch(err => console.log(err.message))
 	
 	
-	
-	function handleData5(data) {
-		console.log(data)
+	function handleData5() {
 		setupCanvas()
 		const canvas = document.querySelector('canvas')
 		const ctx = canvas.getContext('2d')
@@ -58,7 +120,7 @@
 	}
 
 	
-	function handleData4(data) {
+	function handleData4() {
 		console.log(data)
 		setupCanvas('#000')
 		const canvas = document.querySelector('canvas')
@@ -85,7 +147,7 @@
 		})
 	}
 	
-	function handleData3(data) {
+	function handleData3() {
 		console.log(data)
 		setupCanvas()
 		const canvas = document.querySelector('canvas')
@@ -107,7 +169,7 @@
 		})
 	}
 	
-	function handleData2(data) {
+	function handleData2() {
 		console.log(data)
 		setupCanvas()
 		const canvas = document.querySelector('canvas')
@@ -128,7 +190,7 @@
 		})
 	}
 	
-	function handleData(data) {
+	function handleData() {
 		setupCanvas()
 		const canvas = document.querySelector('canvas')
 		const ctx = canvas.getContext('2d')
