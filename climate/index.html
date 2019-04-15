@@ -10,10 +10,18 @@
 </div>
 
 <script>
+	
+	const body = document.querySelector('body')
+	body.style.display = 'flex'
+	body.style.justifyContent = 'center'
+	body.style.alignItems = 'center'
+	
 	fetch('climate.json')
 	.then(res => res.json())
 	.then(json => handleData(json))
 	.catch(err => console.log(err.message))
+	
+	
 	
 	function handleData5(data) {
 		console.log(data)
