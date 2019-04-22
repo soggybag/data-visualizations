@@ -18,5 +18,5 @@ The examples use datasets from [Kaggle](https://www.kaggle.com).
 
 Visualizations are built on several different methods. 
 
-- HTML/CSS 
-- Canvas
+- Examples written from vanilla JS using HTML+CSS and Canvas
+- Examples using Chart.js
