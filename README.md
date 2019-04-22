@@ -12,6 +12,7 @@ The examples use datasets from [Kaggle](https://www.kaggle.com).
 - [Titanic](https://soggybag.github.io/data-visualizations/titanic/index.html)
 - [Population](https://soggybag.github.io/data-visualizations/population/index.html)
 - [Climate](https://soggybag.github.io/data-visualizations/climate/index.html)
+- [Titanic with ChartJS](https://soggybag.github.io/data-visualizations/chartjs/index.html)
 
 ## What's here? 
 
