@@ -13,6 +13,7 @@ The examples use datasets from [Kaggle](https://www.kaggle.com).
 - [Population](https://soggybag.github.io/data-visualizations/population/index.html)
 - [Climate](https://soggybag.github.io/data-visualizations/climate/index.html)
 - [Titanic with ChartJS](https://soggybag.github.io/data-visualizations/chartjs/index.html)
+- [Metal Bands](https://soggybag.github.io/data-visualizations/metal-bands/index.html)
 
 ## What's here? 
 
