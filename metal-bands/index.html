@@ -1,0 +1,76 @@
+<body>
+<!--	<div style="width: 100px; height: 100px; background-color: blue"></div>-->
+</body>
+
+<script src="metal.js"></script>
+<script>
+	
+	const body = document.querySelector('body')
+	body.style.display ='flex'
+	body.style.alignItems = 'flex-end'
+	
+	
+//	const el = document.createElement('div')
+//	body.appendChild(el)
+//	
+//	el.style.width = '100px'
+//	el.style.height = '100px'
+//	el.style.backgroundColor = '#222'
+	
+	console.log(metal[0])
+	const maxFans = Math.max(...metal.map(band => band.fans))
+	console.log(maxFans)
+	
+	metal.sort((a, b) => {
+		console.log(Number(a.formed))
+		return Number(a.formed) - Number(b.formed)
+	})
+	
+	const years = metal.reduce((acc, band) => {
+		if (acc[band.formed]) {
+			acc[band.formed] += 1
+		} else {
+			acc[band.formed] = 1
+		}
+		return acc
+	}, {})
+	
+	const yearsCount = []
+ 	for (let key in years) {
+		yearsCount.push({ year: key, count: years[key]})
+	}
+	console.log(yearsCount)
+	
+	
+	
+	metal.forEach((val, i) => {
+		const el = document.createElement('div')
+		body.appendChild(el)
+		
+		el.innerHTML = `${val.band_name} ${val.formed} ${val.origin}`
+
+		el.style.height = `${val.fans / maxFans * 100}%`
+		el.style.padding = '10px'
+		el.style.margin = '2px'
+		el.style.backgroundColor = '#eee'
+		el.style.textOrientation = 'verical-rl'
+	})
+	
+//	metal.forEach((band, i) => {
+//		const el = document.createElement('div')
+//		console.log(band)
+//	})
+	
+//	a.forEach((val, i) => {
+//		const el = document.createElement('div')
+//		el.style.height = '10px'
+//		el.style.width = `${val * 100}%`
+//		el.style.backgroundColor = 'red'
+//		el.style.margin = '10px'
+////		el.style.position = 'absolute'
+////		el.style.left = Math.random() * 600 + 'px'
+////		el.style.top = Math.random() * 600 + 'px'
+//		body.appendChild(el)
+//	})
+
+</script>
