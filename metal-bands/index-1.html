@@ -1,0 +1,61 @@
+<body>
+<!--	<div style="width: 100px; height: 100px; background-color: blue"></div>-->
+	<div id="container"></div>
+</body>
+
+<script src="metal.js"></script>
+<script>
+	
+	const body = document.querySelector('body')
+	body.style.display ='flex'
+	body.style.alignItems = 'flex-end'
+	body.style.backgroundColor = '#000'
+	body.style.color = '#fff'
+	body.style.fontFamily = 'Helvetica'
+	
+	console.log(metal[0])
+	const maxFans = Math.max(...metal.map(band => band.fans))
+	console.log(maxFans)
+	
+	metal.sort((a, b) => {
+		console.log(Number(a.formed))
+		return Number(a.formed) - Number(b.formed)
+	})
+	
+	metal.sort((a, b) => {
+		return Number(b.fans) - Number(a.fans)
+	})
+	
+	const years = metal.reduce((acc, band) => {
+		if (acc[band.formed]) {
+			acc[band.formed] += 1
+		} else {
+			acc[band.formed] = 1
+		}
+		return acc
+	}, {})
+	
+	const yearsCount = []
+	
+ 	for (let key in years) {
+		yearsCount.push({ year: key, count: years[key]})
+	}
+	
+	console.log(yearsCount)
+	
+	metal.forEach((val, i) => {
+		const el = document.createElement('div')
+		body.appendChild(el)
+		
+		el.innerHTML = `${val.band_name} ${val.formed} ${val.origin} ${val.fans}`
+
+		el.style.flex = '1'
+		el.style.height = `${val.fans / maxFans * 100}%`
+		el.style.padding = '10px'
+		el.style.margin = '2px'
+		const hue = 360 / metal.length * i
+		el.style.backgroundColor = `hsl(${hue}, 30%, 20%)`
+		el.style.textOrientation = 'verical-rl'
+	})
+	
+</script>

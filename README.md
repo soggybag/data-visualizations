@@ -6,14 +6,17 @@ The examples use datasets from [Kaggle](https://www.kaggle.com).
 
 ## Some data visualizations
 
-- [Birth and Death Rates](https://soggybag.github.io/data-visualizations/birth-death-rates/index.html)
-- [Heart Disease](https://soggybag.github.io/data-visualizations/heart-disease/index.html)
-- [Mall Spending](https://soggybag.github.io/data-visualizations/mall-spending/index.html)
+- HTML, CSS, JS
+  - [Birth and Death Rates](https://soggybag.github.io/data-visualizations/birth-death-rates/index.html)
+  - [Mall Spending](https://soggybag.github.io/data-visualizations/mall-spending/index.html)
+  - [Metal Bands](https://soggybag.github.io/data-visualizations/metal-bands/index.html)
 - [Titanic](https://soggybag.github.io/data-visualizations/titanic/index.html)
 - [Population](https://soggybag.github.io/data-visualizations/population/index.html)
-- [Climate](https://soggybag.github.io/data-visualizations/climate/index.html)
-- [Titanic with ChartJS](https://soggybag.github.io/data-visualizations/chartjs/index.html)
-- [Metal Bands](https://soggybag.github.io/data-visualizations/metal-bands/index.html)
+- Canvas, JS
+  - [Heart Disease](https://soggybag.github.io/data-visualizations/heart-disease/index.html)
+  - [Climate](https://soggybag.github.io/data-visualizations/climate/index.html)
+- Chart JS
+  - [Titanic with ChartJS](https://soggybag.github.io/data-visualizations/chartjs/index.html)
 
 ## What's here? 
 
