@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>Getting Started Data Viz</title>
+    <style>
+      body, html {
+        height: 100%;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="content"></div>
+
+    <script>
+
+    // Get a reference to div#content
+    // This is where we will add dynamic elements
+    const content = document.getElementById('content')
+
+    fetch('titanic-passengers.json')
+        .then(res => res.json())
+        .then(json => handleData(json))
+        .catch(err => console.log(err.message))
+    
+    
+    function handleData(data) {
+        // Get an array of relevant objects from the data
+        const fields = data.map(({ fields }) => fields)
+        const fares = fields.map(({ fare }) => fare).filter(fare => fare !== undefined)
+        const maxFare = Math.max(...fares)
+
+        // make a DOM element for each passenger
+        fields.forEach((passenger, i) => {
+            // Make an element
+            const el = document.createElement('div')
+            // Attach the element to the dom
+            content.appendChild(el)
+            // Lesson to point above
+            // Then follow through with
+            el.style.backgroundColor = passenger.sex === 'male' ? 'cornflowerblue' : 'pink'
+            // Use percent to set the height and width
+            // height of the bar is a fraction of the height of the page
+            el.style.width = `2px`
+            // width is percent of the highest fare paid
+            el.style.height = `${passenger.fare / maxFare * 100}%`
+            el.style.position = 'absolute'
+            el.style.left = '50%'
+            el.style.top = '50%'
+            el.style.transformOrigin = '50% 0'
+            el.style.transform = `rotate(${360 / fields.length * i}deg)`
+        });
+        
+    }
+
+    </script>
+  </body>
+</html>
