@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <title>Getting Started Data Viz</title>
+  </head>
+  <body>
+
+    <div id="content"></div>
+
+    <script>
+
+    // Get a reference to div#content
+    // This is where we will add dynamic elements
+    const content = document.getElementById('content')
+
+    fetch('titanic-passengers.json')
+        .then(res => res.json())
+        .then(json => handleData(json))
+        .catch(err => console.log(err.message))
+    
+    
+    function handleData(data) {
+        // Get an array of relevant objects from the data
+        const fields = data.map(({ fields }) => fields)
+
+        console.log(data)
+
+        // make a DOM element for each passenger
+        fields.forEach(passenger => {
+            // Make an element
+            const el = document.createElement('div')
+            // Attach the element to the dom
+            content.appendChild(el)
+            // Style the element
+            el.style.width = '32px'
+            el.style.height = '32px'
+            el.style.backgroundColor = 'red'
+
+            // Lesson to point above
+            // Then follow through with
+            el.style.margin = '1px'
+            el.style.backgroundColor = passenger.survived === 'No' ? 'gray' : 'pink'
+            el.style.borderRadius = passenger.sex == 'female' ? '50%' : 'none'
+
+        });
+
+        // Style content
+        content.style.display = 'flex'
+        content.style.flexWrap = 'wrap'
+    }
+
+    </script>
+  </body>
+</html>
