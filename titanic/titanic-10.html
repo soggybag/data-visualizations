@@ -1,0 +1,119 @@
+<html>
+  <head>
+    <title>Getting Started Data Viz</title>
+    <style>
+      .passengers {
+        
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .main {
+        width: 800px;
+        margin: auto;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: repeat(30, 25px);
+        grid-auto-rows: 25px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="main">
+      <header>
+        <h1>Titanic</h1>
+        <p>A look at the Titanic passenger data.</p>
+      </header>
+  
+      <section>
+        <header>
+          <h2>All Passengers</h2>
+        </header>
+        <div id="passengers" class="content"></div>
+        <footer>
+          <p>Passengers by gender, survival, embarkation, and fare.</p>
+        </footer>
+      </section>
+
+      <section>
+        <header>
+          <h2>Male Passengers</h2>
+        </header>
+        <div id="men" class="content"></div>
+        <footer>
+          <p>Passengers by gender, survival, embarkation, and fare.</p>
+        </footer>
+      </section>
+
+      <section>
+        <header>
+          <h2>Female Passengers</h2>
+        </header>
+        <div id="women" class="content"></div>
+        <footer>
+          <p>Passengers by gender, survival, embarkation, and fare.</p>
+        </footer>
+      </section>
+    </div>
+    
+
+    <script>
+
+    // Get a reference to div#content
+    // This is where we will add dynamic elements
+    const passengers = document.getElementById('passengers')
+    const men = document.getElementById('men')
+    const women = document.getElementById('women')
+    const embarkation = document.getElementById('passengers')
+
+    fetch('titanic-passengers.json')
+        .then(res => res.json())
+        .then(json => {
+          displayPassengers(json, passengers)
+          displayPassengers(json.filter(p => p.fields.sex === "male"), men)
+          displayPassengers(json.filter(p => p.fields.sex === "female"), women)
+        })
+        .catch(err => console.log(err.message))
+
+
+    
+    function displayPassengers(data, display) {
+        // Get an array of relevant objects from the data
+        const fields = data.map(({ fields }) => fields)
+
+        const fares = fields.map(({ fare }) => fare)
+
+        // make a DOM element for each passenger
+        fields.forEach(({ survived, sex, fare, embarked }) => {
+            // Make an element
+            const el = document.createElement('div')
+            // Attach the element to the dom
+            display.appendChild(el)
+            // Style the element
+            el.style.width = '14px'
+            el.style.height = '14px'
+            el.style.backgroundColor = 'red'
+
+            // Lesson to point above
+            // Then follow through with
+            el.style.margin = '1px'
+            el.style.backgroundColor = survived === 'No' ? 'cornflowerblue' : 'pink'
+            el.style.borderRadius = sex === 'female' ? '50%' : 'none'
+            el.style.borderWidth = '3px'
+            el.style.borderStyle = 'solid'
+            
+            el.style.transform = `scale(${fare/100})`
+            const embarkColors = {C:'cyan', Q:'magenta', S:'orange'}
+            el.style.borderColor = embarkColors[embarked]
+        });
+
+    }
+
+    </script>
+  </body>
+</html>
